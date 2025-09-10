@@ -7,9 +7,9 @@
   <style>
     /* ---- Color Palette ---- */
     :root {
-      --primary: #6A89A7;
-      --secondary: #BDDDFC;
-      --accent: #88BDF2;
+      --primary: #E0E1DD;
+      --secondary: #778DA9;
+      --accent: #415A77;
       --dark: #384959;
       --white: #ffffff;
     }
@@ -26,7 +26,7 @@
       color: var(--white);
       padding: 15px 25px;
       text-align: center;
-      font-size: 1.5rem;
+      font-size: 2rem;
       font-weight: bold;
       box-shadow: 0 3px 6px rgba(0,0,0,0.2);
     }
@@ -83,7 +83,7 @@
 </head>
 <body>
 
-  <header>🚀 Rover Telemetry Dashboard</header>
+  <header>Rover Telemetry Dashboard</header>
 
   <div class="container">
     <!-- Vehicle Status -->
@@ -91,6 +91,7 @@
       <h2>Vehicle Status</h2>
       <p>Mode: <span class="value" id="mode">0</span></p>
       <p>Speed: <span class="value" id="speed">0</span></p>
+      <p>Sheering Arm: <span class="value" id="sheering arm">0</span></p>
     </div>
 
     <!-- Steering & Control -->
@@ -114,6 +115,7 @@
       // Generate random values
       const mode = Math.floor(Math.random() * 4);
       const speed = Math.floor(Math.random() * 6);
+      const sheeringarm = Math.floor(Math.random() * 6);
       const arm = Math.floor(Math.random() * 6);
       const angle = Math.floor(Math.random() * 181);
       const joystick = Math.floor(Math.random() * 5);
@@ -122,6 +124,7 @@
       // Update UI
       document.getElementById("mode").textContent = mode;
       document.getElementById("speed").textContent = speed;
+      document.getElementById("sheeringarm").textcontent = sheeringarm;
       document.getElementById("arm").textContent = arm;
       document.getElementById("angle").textContent = angle + "°";
       document.getElementById("joystick").textContent = joystick;
