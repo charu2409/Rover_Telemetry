@@ -4,84 +4,77 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 
 app = Flask(__name__)
-
-# --- Initialize Firebase Admin using service account JSON path in env var ---
 if "FIREBASE_KEY" in os.environ:
     cred_dict = json.loads(os.environ["FIREBASE_KEY"])
     cred = credentials.Certificate(cred_dict)
 else:
-    # fallback for local testing
-    cred = credentials.Certificate("C://Users//charu/Downloads//rover-telemetry-firebase-adminsdk-fbsvc-6081442c29.json")
+    cred = credentials.Certificate("serviceAccountKey.json")
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
-rover = db.collection("rover")  
+telemetry = db.collection("rover_telemetry")
 
 @app.route("/")
 def home():
     return render_template("index.html")
-    
-@app.route("/rover/<doc_id>", methods=["GET"])
-def get_rover(doc_id):
-    doc = rover.document(doc_id.strip()).get()
+
+# READ (single document)
+@app.route("/data/<doc_id>", methods=["GET"])
+def get_data(doc_id):
+    doc = telemetry.document(doc_id.strip().lower()).get()
     if doc.exists:
         return jsonify(doc.to_dict()), 200
-    return jsonify({"error": "Rover data not found"}), 404
+    return jsonify({"error": "Document not found"}), 404
 
-@app.route("/rover", methods=["POST"])
-def create_rover():
+@app.route("/data", methods=["POST"])
+def create_data():
     data = request.get_json()
     if not data or not data.get("id"):
         return jsonify({"error": "JSON with 'id' field required"}), 400
-    
-    doc_id = data["id"].strip()
-    doc_ref = rover.document(doc_id)
-    
+    doc_id = data["id"].strip().lower()
+    doc_ref = telemetry.document(doc_id)
     if doc_ref.get().exists:
-        return jsonify({"error": "Rover data with this ID already exists"}), 409
-    
-    data["timestamp"] = firestore.SERVER_TIMESTAMP
+        return jsonify({"error": "Document already exists"}), 409
     doc_ref.set(data)
-    return jsonify({"message": "Rover data created", "data": data}), 201
+    return jsonify({"message": "Data created", "data": data}), 201
 
-@app.route("/update-rover", methods=["PUT"])
-def update_rover():
+@app.route("/update-data", methods=["PUT"])
+def update_data():
     data = request.get_json()
     if not data or not data.get("id"):
         return jsonify({"error": "JSON with 'id' field required"}), 400
     
-    doc_id = data["id"].strip()
-    doc_ref = rover.document(doc_id)
+    doc_id = data["id"].strip().lower()
+    doc_ref = telemetry.document(doc_id)
     
     if not doc_ref.get().exists:
-        return jsonify({"error": "Rover data not found"}), 404
+        return jsonify({"error": "Document not found"}), 404
     
-    data["timestamp"] = firestore.SERVER_TIMESTAMP
-    doc_ref.set(data, merge=True)  # merge=True allows partial update
-    return jsonify({"message": "Rover data updated", "data": doc_ref.get().to_dict()}), 200
+    doc_ref.set(data, merge=True)
+    return jsonify({"message": "Data updated", "data": doc_ref.get().to_dict()}), 200
 
-@app.route("/delete-rover", methods=["POST"])
-def delete_rover():
+@app.route("/delete-data", methods=["POST"])
+def delete_data():
     data = request.get_json()
     if not data or not data.get("id"):
         return jsonify({"error": "JSON with 'id' field required"}), 400
     
-    doc_id = data["id"].strip()
-    doc_ref = rover.document(doc_id)
+    doc_id = data["id"].strip().lower()
+    doc_ref = telemetry.document(doc_id)
     
     if not doc_ref.get().exists:
-        return jsonify({"error": "Rover data not found"}), 404
+        return jsonify({"error": "Document not found"}), 404
     
     deleted = doc_ref.get().to_dict()
     doc_ref.delete()
-    return jsonify({"message": "Rover data deleted", "data": deleted}), 200
+    return jsonify({"message": "Data deleted", "data": deleted}), 200
 
-@app.route("/rovers", methods=["GET"])
-def list_rovers():
-    docs = rover.stream()
+@app.route("/data", methods=["GET"])
+def list_data():
+    docs = telemetry.stream()
     all_data = [doc.to_dict() for doc in docs]
     return jsonify(all_data), 200
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port)
