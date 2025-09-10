@@ -8,7 +8,7 @@ if "FIREBASE_KEY" in os.environ:
     cred_dict = json.loads(os.environ["FIREBASE_KEY"])
     cred = credentials.Certificate(cred_dict)
 else:
-    cred = credentials.Certificate("serviceAccountKey.json")
+    cred = credentials.Certificate("C:/Users/charu/Downloads/rover-telemetry-firebase-adminsdk-fbsvc-6081442c29.json")
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
