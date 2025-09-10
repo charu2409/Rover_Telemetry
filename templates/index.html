@@ -2,156 +2,125 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rover Dashboard</title>
+  <title>Rover Telemetry Dashboard</title>
   <style>
-    :root {
-      --primary: #E0E1DD;
-      --secondary: #778DA9;
-      --accent: #415A77;
-      --dark: #384959;
-      --white: #ffffff;
-      --line: #dcdcdc;
-      --connected: #28a745;
-      --disconnected: #dc3545;
-    }
-
     body {
+      font-family: Arial, sans-serif;
+      background-color: #e8e9e9;
       margin: 0;
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      background: var(--primary);
-      color: var(--dark);
+      padding: 0;
     }
-
     header {
-      background: var(--accent);
-      color: var(--white);
-      padding: 15px 25px;
+      background-color: #3d5873;
+      color: white;
       text-align: center;
-      font-size: 2rem;
-      font-weight: bold;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-    }
-
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 20px;
-      padding: 30px;
-    }
-
-    .card {
-      background: var(--white);
-      border-radius: 15px;
       padding: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: transform 0.2s, box-shadow 0.2s;
+      font-size: 24px;
+      font-weight: bold;
     }
-
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      width: 320px;
+      transition: transform 0.2s ease-in-out;
+    }
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+      transform: scale(1.05);
     }
-
-    .card h1 {
-      font-size: 1.2rem;
+    .card h2 {
       text-align: center;
       margin-bottom: 15px;
-      color: var(--secondary);
+      color: #3d5873;
     }
-
     .row {
       display: flex;
       justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid #ddd;
+      padding: 8px 0;
     }
-
-    .row:last-child {
-      border-bottom: none;
-    }
-
     .label {
-      font-size: 1rem;
       font-weight: 500;
+      color: #333;
     }
-
     .value {
-      font-size: 1rem;
       font-weight: bold;
-      color: var(--dark);
+      color: #222;
     }
-
-    .status-container {
-      text-align: center;
-      margin-top: 25px;
-    }
-
     .status {
-      font-size: 1.6rem;
+      font-size: 24px;
       font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
     }
-
     .connected {
-      color: var(--connected);
+      color: green;
     }
-
     .disconnected {
-      color: var(--disconnected);
+      color: red;
     }
   </style>
 </head>
 <body>
-
   <header>Rover Telemetry Dashboard</header>
 
   <div class="container">
-    <!-- Vehicle Status -->
     <div class="card">
-      <h1>Vehicle Status</h1>
-      <div class="row">
-        <span class="label">Mode</span>
-        <span class="value" id="mode">0</span>
-      </div>
-      <div class="row">
-        <span class="label">Speed</span>
-        <span class="value" id="speed">0</span>
-      </div>
-      <div class="row">
-        <span class="label">Shearing Arm</span>
-        <span class="value" id="shearingarm">0</span>
-      </div>
+      <h2>Vehicle Status</h2>
+      <div class="row"><span class="label">Mode</span><span class="value" id="mode">0</span></div>
+      <div class="row"><span class="label">Speed</span><span class="value" id="speed">0</span></div>
+      <div class="row"><span class="label">Shearing Arm</span><span class="value" id="shearingArm">0</span></div>
     </div>
 
-    <!-- Steering & Control -->
     <div class="card">
-      <h1>Steering & Control</h1>
-      <div class="row">
-        <span class="label">Steering Angle</span>
-        <span class="value" id="angle">0°</span>
-      </div>
-      <div class="row">
-        <span class="label">Steering Mode</span>
-        <span class="value" id="steeringmode">0</span>
-      </div>
-      <div class="row">
-        <span class="label">Joystick</span>
-        <span class="value" id="joystick">0</span>
-      </div>
+      <h2>Steering & Control</h2>
+      <div class="row"><span class="label">Steering Angle</span><span class="value" id="steeringAngle">0°</span></div>
+      <div class="row"><span class="label">Steering Mode</span><span class="value" id="steeringMode">0</span></div>
+      <div class="row"><span class="label">Joystick</span><span class="value" id="joystick">0</span></div>
     </div>
 
-    <!-- Connection Health -->
     <div class="card">
-      <h1>Connection Health</h1>
-      <div class="row">
-        <span class="label">Heartbeat Status</span>
-        <span class="value" id="heartbeat">0</span>
-      </div>
-      <div class="status-container">
-        <span id="status" class="status disconnected">Disconnected</span>
-      </div>
+      <h2>Connection Health</h2>
+      <div class="row"><span class="label">Heartbeat</span><span class="value" id="heartbeat">0</span></div>
+      <div class="status" id="connectionStatus">Disconnected</div>
     </div>
   </div>
 
+  <script>
+    async function fetchData() {
+      try {
+        let response = await fetch("/rover");
+        let data = await response.json();
+
+        if (!data.error) {
+          document.getElementById("mode").textContent = data.vehicle_status?.mode || 0;
+          document.getElementById("speed").textContent = data.vehicle_status?.speed || 0;
+          document.getElementById("shearingArm").textContent = data.vehicle_status?.shearing_arm || 0;
+
+          document.getElementById("steeringAngle").textContent = (data.steering_control?.steering_angle || 0) + "°";
+          document.getElementById("steeringMode").textContent = data.steering_control?.steering_mode || 0;
+          document.getElementById("joystick").textContent = data.steering_control?.joystick || 0;
+
+          document.getElementById("heartbeat").textContent = data.connection_health?.heartbeat || 0;
+          let status = data.connection_health?.status || "Disconnected";
+          let statusElement = document.getElementById("connectionStatus");
+          statusElement.textContent = status;
+          statusElement.className = "status " + (status === "Connected" ? "connected" : "disconnected");
+        }
+      } catch (err) {
+        console.error("Error fetching rover data:", err);
+      }
+    }
+
+    setInterval(fetchData, 2000); // auto refresh every 2 sec
+    fetchData();
+  </script>
 </body>
 </html>
