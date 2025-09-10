@@ -17,12 +17,12 @@
     body {
       margin: 0;
       font-family: "Segoe UI", Tahoma, sans-serif;
-      background: var(--secondary);
+      background: var(--primary);
       color: var(--dark);
     }
 
     header {
-      background: var(--primary);
+      background: var(--accent);
       color: var(--white);
       padding: 15px 25px;
       text-align: center;
@@ -53,7 +53,7 @@
     .card h2 {
       font-size: 1.2rem;
       margin-bottom: 10px;
-      color: var(--primary);
+      color: var(--secondary);
     }
 
     .value {
@@ -105,8 +105,7 @@
     <!-- Connection Health -->
     <div class="card">
       <h2>Connection Health</h2>
-      <p>Heartbeat: <span class="value" id="heartbeat">0</span></p>
-      <p>Status: <span class="status" id="status">Disconnected</span></p>
+      <p>Heartbeat Status: <span class="status" id="status">Disconnected</span></p>
     </div>
   </div>
 
