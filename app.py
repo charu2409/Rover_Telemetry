@@ -29,13 +29,25 @@ db = firestore.client()
 # Use collection for rover telemetry
 telemetry = db.collection("rover_telemetry")
 
-@app.route("/ui")
-def ui():
-    return render_template("index.html")
+def sanitize_keys(d):
+    """Recursively replace spaces and special chars in dict keys with underscores."""
+    if isinstance(d, dict):
+        new_dict = {}
+        for k, v in d.items():
+            new_key = k.replace(" ", "_").replace("&", "and").lower()
+            new_dict[new_key] = sanitize_keys(v)
+        return new_dict
+    elif isinstance(d, list):
+        return [sanitize_keys(i) for i in d]
+    else:
+        return d
+
+
+
 
 @app.route("/")
 def home():
-    return "Rover Telemetry API — endpoints: GET /data/<id>, POST /data, PUT /update-data, POST /delete-data, GET /data"
+    return render_template("index.html")
 
 # READ (single doc)
 @app.route("/data/<doc_id>", methods=["GET"])
@@ -48,15 +60,18 @@ def get_data(doc_id):
 # CREATE
 @app.route("/data", methods=["POST"])
 def create_data():
-    data = request.get_json()
-    if not data or not data.get("id"):
-        return jsonify({"error": "JSON with 'id' field required"}), 400
-    doc_id = data["id"].strip().lower()
-    doc_ref = telemetry.document(doc_id)
-    if doc_ref.get().exists:
-        return jsonify({"error": "Document already exists"}), 409
-    doc_ref.set(data)
-    return jsonify({"message": "Data created", "data": data}), 201
+    try:
+        data = request.get_json()
+        if not data or "id" not in data:
+            return jsonify({"error": "JSON with 'id' field required"}), 400
+
+        clean_data = sanitize_keys(data)
+        doc_ref = telemetry.document(clean_data["id"])
+        doc_ref.set(clean_data)
+
+        return jsonify({"success": True, "id": clean_data["id"]}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # UPDATE
 @app.route("/update-data", methods=["PUT"])
