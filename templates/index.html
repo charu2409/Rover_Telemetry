@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rover Dashboard</title>
   <style>
-    /* ---- Color Palette ---- */
     :root {
       --primary: #E0E1DD;
       --secondary: #778DA9;
@@ -30,14 +29,14 @@
       font-weight: bold;
       box-shadow: 0 3px 6px rgba(0,0,0,0.2);
     }
-
+  
     .container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
       padding: 30px;
     }
-
+    
     .card {
       background: var(--white);
       border-radius: 15px;
@@ -45,23 +44,24 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       transition: transform 0.2s;
     }
-
+    
     .card:hover {
       transform: translateY(-5px);
     }
-
-    .card h2 {
+    
+    .card h1 {
       font-size: 1.2rem;
+      text-align: center;
       margin-bottom: 10px;
       color: var(--secondary);
     }
-
+    
     .value {
       font-size: 1.8rem;
       font-weight: bold;
       color: var(--dark);
     }
-
+    
     .status {
       font-weight: bold;
       font-size: 1.1rem;
@@ -69,12 +69,12 @@
       border-radius: 8px;
       display: inline-block;
     }
-
+    
     .connected {
       background: #4CAF50;
       color: white;
     }
-
+    
     .disconnected {
       background: #F44336;
       color: white;
@@ -86,32 +86,28 @@
   <header>Rover Telemetry Dashboard</header>
 
   <div class="container">
-    <!-- Vehicle Status -->
     <div class="card">
-      <h2>Vehicle Status</h2>
+      <h1>Vehicle Status</h1>
       <p>Mode: <span class="value" id="mode">0</span></p>
       <p>Speed: <span class="value" id="speed">0</span></p>
       <p>Sheering Arm: <span class="value" id="sheering arm">0</span></p>
     </div>
 
-    <!-- Steering & Control -->
     <div class="card">
-      <h2>Steering & Control</h2>
+      <h1>Steering & Control</h1>
       <p>Steering Arm: <span class="value" id="arm">0</span></p>
       <p>Steering Angle: <span class="value" id="angle">0°</span></p>
       <p>Joystick: <span class="value" id="joystick">0</span></p>
     </div>
-
-    <!-- Connection Health -->
+    
     <div class="card">
-      <h2>Connection Health</h2>
+      <h1>Connection Health</h1>
       <p>Heartbeat Status: <span class="status" id="status">Disconnected</span></p>
     </div>
   </div>
 
   <script>
     function updateValues() {
-      // Generate random values
       const mode = Math.floor(Math.random() * 4);
       const speed = Math.floor(Math.random() * 6);
       const sheeringarm = Math.floor(Math.random() * 6);
@@ -120,7 +116,7 @@
       const joystick = Math.floor(Math.random() * 5);
       const heartbeat = Math.floor(Math.random() * 256);
 
-      // Update UI
+    
       document.getElementById("mode").textContent = mode;
       document.getElementById("speed").textContent = speed;
       document.getElementById("sheeringarm").textcontent = sheeringarm;
@@ -138,11 +134,8 @@
         statusEl.className = "status disconnected";
       }
     }
-
-    // Auto update every 2 seconds
+    
     setInterval(updateValues, 2000);
-
-    // Initial call
     updateValues();
   </script>
 
