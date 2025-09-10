@@ -11,7 +11,7 @@ if "FIREBASE_KEY" in os.environ:
     cred = credentials.Certificate(cred_dict)
 else:
     # fallback for local testing
-    cred = credentials.Certificate("C:\Users\charu\Downloads\rover-telemetry-firebase-adminsdk-fbsvc-6081442c29.json")
+    cred = credentials.Certificate("C:\\Users\\charu\\Downloads\\rover-telemetry-firebase-adminsdk-fbsvc-6081442c29.json")
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
